@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"sync"
 
 	"github.com/bigodines/bigopool"
 )
@@ -19,6 +18,8 @@ type (
 )
 
 func (j ParseJob) Execute() (bigopool.Result, error) {
+	println(j.fileName)
+	parseFile(j.fileName)
 	// your logic here.
 	// Result is an interface{}
 	return "anything", nil
@@ -33,37 +34,26 @@ func main() {
 	}
 	flag.Parse()
 
-	var wg sync.WaitGroup
-	files := make(chan string)
-
-	go func() {
-		err := filepath.Walk(*dir, func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			if !info.IsDir() {
-				files <- path
-			}
-			return nil
-		})
-
-		if err != nil {
-			log.Fatalf("error walking the path %q: %v\n", *dir, err)
-		}
-		close(files)
-	}()
-
-	for i := 0; i < 10; i++ { // Number of goroutines to parse files
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			for path := range files {
-				parseFile(path)
-			}
-		}()
+	dispatcher, err := bigopool.NewDispatcher(50, 1000)
+	if err != nil {
+		panic(err)
 	}
-
-	wg.Wait()
+	// spawn workers
+	dispatcher.Run()
+	// send work items
+	err = filepath.Walk(*dir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			job := ParseJob{fileName: path}
+			dispatcher.Enqueue((job))
+		}
+		return nil
+	})
+	if err != nil {
+		log.Fatalf("error walking the path %q: %v\n", *dir, err)
+	}
 }
 
 func parseFile(path string) {
