@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strings"
 )
 
 func ParseFile(path string) {
@@ -27,17 +28,21 @@ func ParseFile(path string) {
 func parseContent(path string, content []byte, language string) {
 	commentRegex := getCommentRegex(language)
 	re := regexp.MustCompile(`BestBy[\s\(\-\:]?\d{2}/\d{4}`)
-	matches := commentRegex.FindAllString(string(content), -1)
-	if len(matches) > 0 {
-		for _, comment := range matches {
-			bestByMatches := re.FindAllString(comment, -1)
-			if len(bestByMatches) > 0 {
-				fmt.Printf("File: %s\n", path)
-				for _, match := range bestByMatches {
-					fmt.Println(" ", match)
+	lines := strings.Split(string(content), "\n")
+	for n, line := range lines {
+		matches := commentRegex.FindAllString(line, -1)
+		if len(matches) > 0 {
+			for _, comment := range matches {
+				bestByMatches := re.FindAllString(comment, -1)
+				if len(bestByMatches) > 0 {
+					fmt.Printf("File: %s\n", path)
+					fmt.Println(" ", comment)
+					if n+1 < len(lines) {
+						fmt.Println("\t-> ", lines[n+1])
+					}
+				} else {
+					fmt.Printf("no matches in %s\n", path)
 				}
-			} else {
-				fmt.Printf("no matches in %s\n", path)
 			}
 		}
 	}
