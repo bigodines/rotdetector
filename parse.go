@@ -2,26 +2,27 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 )
 
-func ParseFile(path string) {
+// ParseFile Parses a single file searching for BestBy annotations
+// BestBy: 12/2024: will only error if the file cannot be read but will only understand context around predefined
+// number of languages
+func ParseFile(path string) error {
 	content, err := os.ReadFile(path)
 	if err != nil {
-		log.Printf("error reading file %q: %v\n", path, err)
-		return
+		return fmt.Errorf("error reading file %q: %v", path, err)
 	}
 
-	// language := detectLanguage(path)
-	// if language == "" {
-	// 	return
-	// }
+	language := detectLanguage(path)
+	if language != "" {
+		parseContent(path, content, "golang")
+	}
 
-	parseContent(path, content, "golang")
+	return nil
 }
 
 // BestBy 01/2001 - another example
@@ -35,13 +36,14 @@ func parseContent(path string, content []byte, language string) {
 			for _, comment := range matches {
 				bestByMatches := re.FindAllString(comment, -1)
 				if len(bestByMatches) > 0 {
-					fmt.Printf("File: %s\n", path)
-					fmt.Println(" ", comment)
+					l := n
 					if n+1 < len(lines) {
-						fmt.Println("\t-> ", lines[n+1])
+						l = n + 1
+					} else {
+						l = n
 					}
-				} else {
-					fmt.Printf("no matches in %s\n", path)
+					fmt.Printf("File: %s\n (L:%d) %s \n\t-> %v", path, l, comment, lines[l])
+
 				}
 			}
 		}
@@ -50,7 +52,6 @@ func parseContent(path string, content []byte, language string) {
 
 func detectLanguage(path string) string {
 	ext := filepath.Ext(path)
-	println(ext)
 	switch ext {
 	case ".go":
 		return "golang"
