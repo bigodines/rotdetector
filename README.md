@@ -11,5 +11,7 @@ make build
 ./bin/rotdetector -dir=.
 ```
 
-These commands will download, build and run the latest version of rotdetector in the current directory
+These commands will download, build and run the latest version of rotdetector in the diven directory `-dir` scanning all the files that contain a line comment `BestBy MM/YYYY` on it (and its subdirectories). It will print the file, comment, line number and the immediate line below the comment which will likely identify what needs out attention.
+
+Advanced options include custom outputs to make it easier to plug into your preferred CI/CD pipeline
 
