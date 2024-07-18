@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/bigodines/bigopool"
+	rd "github.com/bigodines/rotdetector"
 )
 
 type (
@@ -20,7 +21,7 @@ type (
 // Parses a single file searching for BestBy annotations
 // compares the date with the current date and flags the file if the date is in the past
 func (j ParseJob) Execute() (bigopool.Result, error) {
-	ParseFile(j.fileName)
+	rd.ParseFile(j.fileName)
 	// Result is an interface{}
 	return "anything", nil
 }

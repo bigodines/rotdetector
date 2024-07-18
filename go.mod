@@ -1,4 +1,4 @@
-module rotdetector
+module github.com/bigodines/rotdetector
 
 go 1.22.3
 
