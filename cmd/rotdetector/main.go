@@ -12,7 +12,6 @@ import (
 )
 
 type (
-	// BestBy: 02/2023 - This is just an example of how to use RotDetector
 	ParseJob struct {
 		fileName string
 	}
@@ -28,12 +27,28 @@ func (j ParseJob) Execute() (bigopool.Result, error) {
 
 func main() {
 	dir := flag.String("dir", ".", "Directory to start parsing from")
+	v := flag.Bool("v", false, "Verbose (debug) mode")
+	ci := flag.Bool("ci", false, "CI friendly mode")
+	export := flag.String("export", "", "Export results to a file")
 	flag.Usage = func() {
 		fmt.Fprintf(flag.CommandLine.Output(), "Usage: %s [options]\n", os.Args[0])
 		fmt.Fprintf(flag.CommandLine.Output(), "Options:\n")
 		flag.PrintDefaults()
 	}
 	flag.Parse()
+
+	if v != nil && *v {
+		rd.SetLogLevel(rd.DEBUG)
+		rd.Debug("Now running in debug mode")
+	}
+
+	if *ci {
+		rd.Debug("-ci mode is set")
+	}
+
+	if *export != "" {
+		rd.Debug("Exporting results to: ", *export)
+	}
 
 	dispatcher, err := bigopool.NewDispatcher(32, 1000)
 	if err != nil {
@@ -59,4 +74,8 @@ func main() {
 	if len(errs.All()) > 0 {
 		log.Fatalf("errors: %v\n", errs)
 	}
+}
+
+func help() {
+
 }
