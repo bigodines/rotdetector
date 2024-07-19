@@ -26,6 +26,7 @@ func (j ParseJob) Execute() (bigopool.Result, error) {
 }
 
 func main() {
+	// Configure
 	dir := flag.String("dir", ".", "Directory to start parsing from")
 	v := flag.Bool("v", false, "Verbose (debug) mode")
 	ci := flag.Bool("ci", false, "CI friendly mode")
@@ -50,13 +51,16 @@ func main() {
 		rd.Debug("Exporting results to: ", *export)
 	}
 
+	// Run
 	dispatcher, err := bigopool.NewDispatcher(32, 1000)
 	if err != nil {
-		panic(err)
+		log.Fatalf("bigopool died. %v", err)
 	}
+
 	// spawn workers
 	dispatcher.Run()
-	// send work items
+
+	// enqueue work items
 	err = filepath.Walk(*dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -74,8 +78,4 @@ func main() {
 	if len(errs.All()) > 0 {
 		log.Fatalf("errors: %v\n", errs)
 	}
-}
-
-func help() {
-
 }
