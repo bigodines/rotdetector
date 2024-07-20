@@ -72,7 +72,7 @@ func parseContent(path string, content []byte, language string, todo bool, verbo
 						} else {
 							l = n
 						}
-						fmt.Printf(Green+"File: %s\n (L:%d) %s \n\t-> %v\n"+Reset, path, l, comment, lines[l])
+						fmt.Printf(Magenta+"File: %s (L:%d) %s \n\t-> %v\n"+Reset, path, l, comment, lines[l])
 					}
 				}
 				// no need to analyze further if we are not looking for TODOs
@@ -88,7 +88,7 @@ func parseContent(path string, content []byte, language string, todo bool, verbo
 					} else {
 						l = n
 					}
-					fmt.Printf(Yellow+"File: %s\n (L:%d) %s \n\t-> %v\n"+Reset, path, l, comment, lines[l])
+					fmt.Printf(Cyan+"File: %s (L:%d) %s \n\t-> %v\n"+Reset, path, l, comment, lines[l])
 				}
 			}
 		}
