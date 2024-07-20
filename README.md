@@ -1,6 +1,6 @@
 # RotDetector
 
-This amazing piece of technology has been built to assist detection of code that is rotting. Hook it up to your CI/CD or build tool and simply add `BestBy MM/YYYY` or `TODO` (off by default) to a comment. RotDetector will parse (very quickly) all the files looking for expired notes and alert on those.
+This amazing piece of technology has been built to assist detecting code that is rotting. Hook it up to your CI/CD or build tool and simply add `BestBy MM/YYYY` or `TODO` (off by default) to a comment. RotDetector will parse (very quickly) all the files looking for expired notes and alert on those.
 
 You can then decide if you want to deal with the issue or change the date and document the reasoning in a pull-request.
 
@@ -13,9 +13,7 @@ make build
 ./bin/rotdetector -dir=.
 ```
 
-These commands will download, build and run the latest version of rotdetector in the diven directory `-dir` scanning all the files that contain a line comment `BestBy MM/YYYY` on it (and its subdirectories). It will print the file, comment, line number and the immediate line below the comment which will likely identify what needs out attention.
-
-Advanced options include custom outputs to make it easier to plug into your preferred CI/CD pipeline
+These commands will download, build and run the latest version of rotdetector in the given directory `-dir` (and its subdirectories) scanning all the files that contain a line comment `BestBy MM/YYYY` on it. It will print the file, comment, line number and the immediate line below the comment which will likely identify what needs your attention.
 
 ## Options
 
