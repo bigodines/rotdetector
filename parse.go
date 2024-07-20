@@ -37,7 +37,7 @@ func ParseFile(opts ParseOptions) error {
 func parseContent(path string, content []byte, language string, todo bool, verbose bool) {
 	commentRegex := getCommentRegex(language)
 	// I have an interesting problem to solve. Let me use Regex. Now I have two problems to solve.
-	reBestBy := regexp.MustCompile(`[bB]est[bB]y[\s\(\-\:]?(?P<Month>\d{1,2})/(?P<Year>\d{2}|\d{4})`)
+	reBestBy := regexp.MustCompile(`[bB]est[bB]y[\s\(\-\:]?(?P<Month>\d{1,2})/(?P<Year>\d{4}|\d{2})`)
 	reTodo := regexp.MustCompile(`TODO`)
 	lines := strings.Split(string(content), "\n")
 	for n, line := range lines {
@@ -73,6 +73,8 @@ func parseContent(path string, content []byte, language string, todo bool, verbo
 							l = n
 						}
 						fmt.Printf(Magenta+"File: %s (L:%d) %s \n\t-> %v\n"+Reset, path, l, comment, lines[l])
+					} else {
+						Debug(fmt.Sprintf("Found BestBy that is still valid: %v", comment))
 					}
 				}
 				// no need to analyze further if we are not looking for TODOs

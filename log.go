@@ -37,7 +37,7 @@ func SetLogLevel(level int) {
 func Debug(v ...interface{}) {
 	if logLevel <= DEBUG {
 		logger.SetPrefix("DEBUG: ")
-		logger.Printf(Red+" %v "+Reset, v...)
+		logger.Printf(Red+" %v\n"+Reset, v...)
 	}
 }
 

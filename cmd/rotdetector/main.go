@@ -41,6 +41,8 @@ func main() {
 	}
 	flag.Parse()
 
+	total := 0
+
 	if v != nil && *v {
 		rd.SetLogLevel(rd.DEBUG)
 		rd.Debug("Now running in debug mode")
@@ -59,7 +61,7 @@ func main() {
 	}
 
 	// Run
-	dispatcher, err := bigopool.NewDispatcher(32, 1000)
+	dispatcher, err := bigopool.NewDispatcher(100, 100000)
 	if err != nil {
 		log.Fatalf("bigopool died. %v", err)
 	}
@@ -75,6 +77,7 @@ func main() {
 		if !info.IsDir() {
 			job := ParseJob{fileName: path, todo: *todo}
 			dispatcher.Enqueue(job)
+			total++
 		}
 		return nil
 	})
@@ -85,4 +88,6 @@ func main() {
 	if len(errs.All()) > 0 {
 		log.Fatalf("errors: %v\n", errs)
 	}
+	rd.Debug(fmt.Sprintf("Done scanning. Total files scanned: %d", total))
+
 }
