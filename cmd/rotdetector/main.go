@@ -41,7 +41,7 @@ func main() {
 	}
 	flag.Parse()
 
-	// TODO: foobar
+	// TODO: foobar (test comment)
 	if v != nil && *v {
 		rd.SetLogLevel(rd.DEBUG)
 		rd.Debug("Now running in debug mode")
