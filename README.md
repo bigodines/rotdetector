@@ -15,3 +15,18 @@ These commands will download, build and run the latest version of rotdetector in
 
 Advanced options include custom outputs to make it easier to plug into your preferred CI/CD pipeline
 
+## Options
+
+```bash
+Usage: ./bin/rotdetector [options]
+Options:
+  -ci
+    	(soon) CI friendly mode (no color output, exit 1 when detect rot)
+  -dir string
+    	Directory to start parsing from (default ".")
+  -export string
+    	Export results to a file
+  -todo
+    	detect TODOs
+  -v	Verbose (debug) mode
+```
