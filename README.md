@@ -2,6 +2,8 @@
 
 This amazing piece of technology has been built to assist detection of code that is rotting. Hook it up to your CI/CD or build tool and simply add `BestBy MM/YYYY` or `TODO` (off by default) to a comment. RotDetector will parse (very quickly) all the files looking for expired notes and alert on those.
 
+You can then decide if you want to deal with the issue or change the date and document the reasoning in a pull-request.
+
 ## Quickstart
 
 ```bash
