@@ -22,9 +22,7 @@ type (
 // compares the date with the current date and flags the file if the date is in the past
 func (j ParseJob) Execute() (bigopool.Result, error) {
 	opts := rd.ParseOptions{Path: j.fileName, Todo: j.todo}
-	rd.ParseFile(opts)
-	// Result is an interface{}
-	return "anything", nil
+	return rd.ParseFile(opts)
 }
 
 func main() {
@@ -89,10 +87,19 @@ func main() {
 	if err != nil {
 		log.Fatalf("error walking the path %q: %v\n", *dir, err)
 	}
-	_, errs := dispatcher.Wait()
+	rotten, errs := dispatcher.Wait()
 	if len(errs.All()) > 0 {
 		log.Fatalf("errors: %v\n", errs)
 	}
+
 	rd.Debug(fmt.Sprintf("Done scanning. Total files scanned: %d", total))
+	if len(rotten) > 0 {
+		for _, r := range rotten {
+			if r.(bool) {
+				os.Exit(1)
+			}
+
+		}
+	}
 
 }

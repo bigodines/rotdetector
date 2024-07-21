@@ -19,22 +19,23 @@ type ParseOptions struct {
 // ParseFile Parses a single file searching for BestBy annotations
 // BestBy: 12/2024: will only error if the file cannot be read but will only understand context around predefined
 // number of languages
-func ParseFile(opts ParseOptions) error {
+func ParseFile(opts ParseOptions) (foundRot bool, err error) {
 	content, err := os.ReadFile(opts.Path)
 	if err != nil {
-		return fmt.Errorf("error reading file %q: %v", opts.Path, err)
+		return true, fmt.Errorf("error reading file %q: %v", opts.Path, err)
 	}
 
 	language := detectLanguage(opts.Path)
 	if language != "" {
-		parseContent(opts.Path, content, "golang", opts.Todo, opts.Verbose)
+		foundRot = parseContent(opts.Path, content, "golang", opts.Todo, opts.Verbose)
 	}
 
-	return nil
+	return foundRot, nil
 }
 
 // BestBy 01/2001 - another example
-func parseContent(path string, content []byte, language string, todo bool, verbose bool) {
+func parseContent(path string, content []byte, language string, todo bool, verbose bool) bool {
+	foundRot := false
 	commentRegex := getCommentRegex(language)
 	// I have an interesting problem to solve. Let me use Regex. Now I have two problems to solve.
 	reBestBy := regexp.MustCompile(`[bB]est[bB]y[\s\(\-\:]?(?P<Month>\d{1,2})/(?P<Year>\d{4}|\d{2})`)
@@ -65,6 +66,7 @@ func parseContent(path string, content []byte, language string, todo bool, verbo
 					bestByDate := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
 					currentDate := time.Now()
 					if bestByDate.Before(currentDate) {
+						foundRot = true
 						// at this point we've detected an expired comment
 						l := n
 						if n+1 < len(lines) {
@@ -84,6 +86,7 @@ func parseContent(path string, content []byte, language string, todo bool, verbo
 				// TODO: combine with the block above.
 				reTodoMatches := reTodo.FindAllString(comment, -1)
 				if len(reTodoMatches) > 0 {
+					foundRot = true
 					l := n
 					if n+1 < len(lines) {
 						l = n + 1
@@ -95,6 +98,7 @@ func parseContent(path string, content []byte, language string, todo bool, verbo
 			}
 		}
 	}
+	return foundRot
 }
 
 func detectLanguage(path string) string {
