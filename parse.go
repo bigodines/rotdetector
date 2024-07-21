@@ -86,7 +86,6 @@ func parseContent(path string, content []byte, language string, todo bool, verbo
 				// TODO: combine with the block above.
 				reTodoMatches := reTodo.FindAllString(comment, -1)
 				if len(reTodoMatches) > 0 {
-					foundRot = true
 					l := n
 					if n+1 < len(lines) {
 						l = n + 1
