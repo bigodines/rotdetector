@@ -49,6 +49,11 @@ func main() {
 	}
 
 	if *ci {
+		// disable colors
+		rd.Cyan = ""
+		rd.Red = ""
+		rd.Magenta = ""
+		rd.Reset = ""
 		rd.Debug("-ci mode is set")
 	}
 

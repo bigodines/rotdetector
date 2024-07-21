@@ -25,7 +25,6 @@ var (
 	Magenta = "\033[35m"
 	Cyan    = "\033[36m"
 	Gray    = "\033[37m"
-	White   = "\033[97m"
 )
 
 // SetLogLevel sets the logging level.
@@ -37,7 +36,7 @@ func SetLogLevel(level int) {
 func Debug(v ...interface{}) {
 	if logLevel <= DEBUG {
 		logger.SetPrefix("DEBUG: ")
-		logger.Printf(Red+" %v\n"+Reset, v...)
+		logger.Println(v...)
 	}
 }
 
