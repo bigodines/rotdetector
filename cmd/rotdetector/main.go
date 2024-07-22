@@ -29,9 +29,9 @@ func main() {
 	// Configure
 	dir := flag.String("dir", ".", "Directory to start parsing from")
 	v := flag.Bool("v", false, "Verbose (debug) mode")
-	ci := flag.Bool("ci", false, "(soon) CI friendly mode (no color output, exit 1 when detect rot)")
-	todo := flag.Bool("todo", false, "detect TODOs")
-	export := flag.String("export", "", "Export results to a file")
+	ci := flag.Bool("ci", false, "CI friendly mode (no color output)")
+	todo := flag.Bool("todo", false, "detect TODOs (todo's don't rot yet)")
+	export := flag.String("export", "", "(soon) Export results to a file")
 	flag.Usage = func() {
 		fmt.Fprintf(flag.CommandLine.Output(), "Usage: %s [options]\n", os.Args[0])
 		fmt.Fprintf(flag.CommandLine.Output(), "Options:\n")
