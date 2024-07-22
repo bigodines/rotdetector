@@ -63,23 +63,13 @@ func main() {
 		rd.Debug("Detecting TODOs")
 	}
 
-	// Run
-	dispatcher, err := bigopool.NewDispatcher(100, 100000)
-	if err != nil {
-		log.Fatalf("bigopool died. %v", err)
-	}
-
-	// spawn workers
-	dispatcher.Run()
-
-	// enqueue work items
-	err = filepath.Walk(*dir, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(*dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 		if !info.IsDir() {
 			job := ParseJob{fileName: path, todo: *todo}
-			dispatcher.Enqueue(job)
+			job.Execute()
 			total++
 		}
 		return nil
@@ -87,19 +77,19 @@ func main() {
 	if err != nil {
 		log.Fatalf("error walking the path %q: %v\n", *dir, err)
 	}
-	rotten, errs := dispatcher.Wait()
-	if len(errs.All()) > 0 {
-		log.Fatalf("errors: %v\n", errs)
-	}
+	// rotten, errs := dispatcher.Wait()
+	// if len(errs.All()) > 0 {
+	// 	log.Fatalf("errors: %v\n", errs)
+	// }
 
 	rd.Debug(fmt.Sprintf("Done scanning. Total files scanned: %d", total))
-	if len(rotten) > 0 {
-		for _, r := range rotten {
-			if r.(bool) {
-				os.Exit(1)
-			}
+	// if len(rotten) > 0 {
+	// 	for _, r := range rotten {
+	// 		if r.(bool) {
+	// 			os.Exit(1)
+	// 		}
 
-		}
-	}
+	// 	}
+	// }
 
 }
