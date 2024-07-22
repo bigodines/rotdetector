@@ -13,7 +13,7 @@ make build
 ./bin/rotdetector -dir=.
 ```
 
-These commands will download, build and run the latest version of rotdetector in the given directory `-dir` (and its subdirectories) scanning all the files that contain a line comment `BestBy MM/YYYY` on it. It will print the file, comment, line number and the immediate line below the comment which will likely identify what needs your attention.
+These commands will download, build and run the latest version of rotdetector in the given directory `-dir` (and its subdirectories) scanning all the files that contain a line comment `BestBy MM/YYYY` on it. It will print the file, comment, line number and the immediate line below the comment which will likely identify what needs your attention. It'll also exit(1)
 
 ## Options
 
@@ -21,11 +21,11 @@ These commands will download, build and run the latest version of rotdetector in
 Usage: ./bin/rotdetector [options]
 Options:
   -ci
-    	(soon) CI friendly mode (no color output, exit 1 when detect rot)
+    	CI friendly mode (no color output)
   -dir string
     	Directory to start parsing from (default ".")
   -export string
-    	Export results to a file
+    	(soon) Export results to a file
   -todo
     	detect TODOs
   -v	Verbose (debug) mode
