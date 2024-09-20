@@ -26,7 +26,7 @@ func (j ParseJob) Execute() (bigopool.Result, error) {
 }
 
 func main() {
-	// Configure
+	// CLI options
 	dir := flag.String("dir", ".", "Directory to start parsing from")
 	v := flag.Bool("v", false, "Verbose (debug) mode")
 	ci := flag.Bool("ci", false, "CI friendly mode (no color output)")
@@ -39,7 +39,7 @@ func main() {
 	}
 	flag.Parse()
 
-	total := 0
+	fileCnt := 0
 
 	if v != nil && *v {
 		rd.SetLogLevel(rd.DEBUG)
@@ -80,19 +80,20 @@ func main() {
 		if !info.IsDir() {
 			job := ParseJob{fileName: path, todo: *todo}
 			dispatcher.Enqueue(job)
-			total++
+			fileCnt++
 		}
 		return nil
 	})
 	if err != nil {
 		log.Fatalf("error walking the path %q: %v\n", *dir, err)
 	}
+
 	rotten, errs := dispatcher.Wait()
 	if len(errs.All()) > 0 {
 		log.Fatalf("errors: %v\n", errs)
 	}
 
-	rd.Debug(fmt.Sprintf("Done scanning. Total files scanned: %d", total))
+	rd.Debug(fmt.Sprintf("Done scanning. Total files scanned: %d", fileCnt))
 	if len(rotten) > 0 {
 		for _, r := range rotten {
 			if r.(bool) {
