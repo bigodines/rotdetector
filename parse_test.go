@@ -3,6 +3,8 @@ package rotdetector
 import (
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestParseFileCanLoadFile(t *testing.T) {
@@ -14,14 +16,15 @@ func TestParseFileCanLoadFile(t *testing.T) {
 
 	// Test with TODO and verbose flags set to true
 	opts := ParseOptions{Path: testFilePath, Todo: true, Verbose: true}
-	err := ParseFile(opts)
+	detected, err := ParseFile(opts)
 	if err != nil {
 		t.Fatalf("ParseFile returned an error: %v", err)
 	}
+	assert.Equal(t, detected, true, "Expected a detected rot")
 
 	// Test with TODO and verbose flags set to false
 	opts = ParseOptions{Path: testFilePath, Todo: false, Verbose: false}
-	err = ParseFile(opts)
+	_, err = ParseFile(opts)
 	if err != nil {
 		t.Fatalf("ParseFile returned an error: %v", err)
 	}

@@ -10,10 +10,21 @@ import (
 	"time"
 )
 
+const (
+	TypeBestBy = iota
+	TypeTodo
+)
+
 type ParseOptions struct {
 	Path    string
 	Todo    bool
 	Verbose bool
+}
+
+type ParseResult struct {
+	Line int
+	File string
+	Type int
 }
 
 // ParseFile Parses a single file searching for BestBy annotations
@@ -38,9 +49,11 @@ func parseContent(path string, content []byte, language string, todo bool, verbo
 	foundRot := false
 	commentRegex := getCommentRegex(language)
 	// I have an interesting problem to solve. Let me use Regex. Now I have two problems to solve.
+	// This regexp matches several combinations of "BestBy" annotations
 	reBestBy := regexp.MustCompile(`[bB]est[bB]y[\s\(\-\:]?(?P<Month>\d{1,2})/(?P<Year>\d{4}|\d{2})`)
 	reTodo := regexp.MustCompile(`TODO`)
 	lines := strings.Split(string(content), "\n")
+
 	for n, line := range lines {
 		matches := commentRegex.FindAllString(line, -1)
 		if len(matches) > 0 {
@@ -63,6 +76,7 @@ func parseContent(path string, content []byte, language string, todo bool, verbo
 					if year < 100 {
 						year += 2000
 					}
+
 					bestByDate := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
 					currentDate := time.Now()
 					if bestByDate.Before(currentDate) {
@@ -71,14 +85,13 @@ func parseContent(path string, content []byte, language string, todo bool, verbo
 						l := n
 						if n+1 < len(lines) {
 							l = n + 1
-						} else {
-							l = n
 						}
 						fmt.Printf(Magenta+"File: %s (L:%d) %s \n\t-> %v\n"+Reset, path, l, comment, lines[l])
 					} else {
 						Debug(fmt.Sprintf("Found BestBy that is still valid: %v", comment))
 					}
 				}
+
 				// no need to analyze further if we are not looking for TODOs
 				if !todo {
 					continue
@@ -115,11 +128,13 @@ func detectLanguage(path string) string {
 }
 
 func getCommentRegex(language string) *regexp.Regexp {
+	cStyleComment := regexp.MustCompile(`(?m)\/\/.*|\/\*[\s\S]*?\*\/`)
+
 	switch language {
 	case "golang":
-		return regexp.MustCompile(`(?m)\/\/.*|\/\*[\s\S]*?\*\/`)
+		return cStyleComment
 	case "javascript":
-		return regexp.MustCompile(`(?m)\/\/.*|\/\*[\s\S]*?\*\/`)
+		return cStyleComment
 	case "ruby":
 		return regexp.MustCompile(`(?m)#.*`)
 	default:
