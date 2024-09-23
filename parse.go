@@ -67,12 +67,13 @@ func parseContent(path string, content []byte, language string, todo bool, verbo
 						fmt.Errorf("error parsing month: %v", err)
 						continue
 					}
+
 					year, err := strconv.Atoi(string(yearStr))
 					if err != nil {
 						fmt.Errorf("error parsing year: %v", err)
 						continue
 					}
-					// Adjust year for 2-digit format
+					// Adjust year from 2-digit format
 					if year < 100 {
 						year += 2000
 					}
