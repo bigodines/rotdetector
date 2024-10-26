@@ -38,7 +38,7 @@ func ParseFile(opts ParseOptions) (foundRot bool, err error) {
 
 	language := detectLanguage(opts.Path)
 	if language != "" {
-		foundRot = parseContent(opts.Path, content, "golang", opts.Todo, opts.Verbose)
+		foundRot = parseContent(opts.Path, content, language, opts.Todo, opts.Verbose)
 	}
 
 	return foundRot, nil
@@ -49,8 +49,8 @@ func parseContent(path string, content []byte, language string, todo bool, verbo
 	foundRot := false
 	commentRegex := getCommentRegex(language)
 	// I have an interesting problem to solve. Let me use Regex. Now I have two problems to solve.
-	// This regexp matches several combinations of "BestBy" annotations
-	reBestBy := regexp.MustCompile(`[bB]est[bB]y[\s\(\-\:]?(?P<Month>\d{1,2})/(?P<Year>\d{4}|\d{2})`)
+	// This regexp matches several combinations of "BestBy" formats
+	reBestBy := regexp.MustCompile(`[bB]est[bB]y[\s\(\-\:]*?(?P<Month>\d{1,2})/(?P<Year>\d{4}|\d{2})`)
 	reTodo := regexp.MustCompile(`TODO`)
 	lines := strings.Split(string(content), "\n")
 

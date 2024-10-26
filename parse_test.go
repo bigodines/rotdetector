@@ -82,3 +82,71 @@ func TestGetCommentRegex(t *testing.T) {
 		})
 	}
 }
+
+func TestParseContent(t *testing.T) {
+	tests := []struct {
+		name     string
+		path     string
+		content  string
+		language string
+		todo     bool
+		verbose  bool
+		expected bool
+	}{
+		{
+			name:     "Expired BestBy",
+			path:     "test.go",
+			content:  "// BestBy: 01/2001: foobar\n",
+			language: "golang",
+			todo:     false,
+			verbose:  true,
+			expected: true,
+		},
+		{
+			name:     "Valid BestBy",
+			path:     "test.go",
+			content:  "// BestBy: 01/2099\n",
+			language: "golang",
+			todo:     false,
+			verbose:  false,
+			expected: false,
+		},
+		{
+			name:     "TODO Comment",
+			path:     "test.go",
+			content:  "// TODO: fix this\n",
+			language: "golang",
+			todo:     true,
+			verbose:  false,
+			expected: false,
+		},
+		{
+			name:     "No Comments",
+			path:     "test.go",
+			content:  "func main() {}\n",
+			language: "golang",
+			todo:     false,
+			verbose:  false,
+			expected: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			result := parseContent(tt.path, []byte(tt.content), tt.language, tt.todo, tt.verbose)
+			if result != tt.expected {
+				t.Errorf("expected %v, got %v", tt.expected, result)
+			}
+		})
+	}
+}
+
+func TestParseFileErrors(t *testing.T) {
+	// Test with a non-existent file
+	opts := ParseOptions{Path: "non_existent_file.go", Todo: false, Verbose: false}
+	_, err := ParseFile(opts)
+	if err == nil {
+		t.Fatalf("expected an error for non-existent file, got nil")
+	}
+}
