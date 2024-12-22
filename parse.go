@@ -134,13 +134,9 @@ func getCommentRegex(language string) *regexp.Regexp {
 	cStyleComment := regexp.MustCompile(`(?m)\/\/.*|\/\*[\s\S]*?\*\/`)
 
 	switch language {
-	case "golang":
+	case "golang", "javascript":
 		return cStyleComment
-	case "javascript":
-		return cStyleComment
-	case "ruby":
-		return regexp.MustCompile(`(?m)#.*`)
-	case "python":
+	case "ruby", "python":
 		return regexp.MustCompile(`(?m)#.*`)
 	default:
 		return nil
