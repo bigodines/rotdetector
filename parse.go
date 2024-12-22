@@ -123,6 +123,8 @@ func detectLanguage(path string) string {
 		return "javascript"
 	case ".rb":
 		return "ruby"
+	case ".py":
+		return "python"
 	default:
 		return ""
 	}
@@ -137,6 +139,8 @@ func getCommentRegex(language string) *regexp.Regexp {
 	case "javascript":
 		return cStyleComment
 	case "ruby":
+		return regexp.MustCompile(`(?m)#.*`)
+	case "python":
 		return regexp.MustCompile(`(?m)#.*`)
 	default:
 		return nil

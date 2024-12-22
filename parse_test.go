@@ -39,6 +39,7 @@ func TestDetectLanguage(t *testing.T) {
 		{"script.ts", "javascript"},
 		{"script.js", "javascript"},
 		{"script.rb", "ruby"},
+		{"script.py", "python"},
 		{"unknown.txt", ""},
 	}
 
@@ -63,6 +64,7 @@ func TestGetCommentRegex(t *testing.T) {
 		{"javascript", "// This is a comment", true},
 		{"ruby", "# This is a comment", true},
 		{"ruby", "// This isn't a comment!!!", false},
+		{"python", "# This is a comment", true},
 		{"unknown", "// This should not match", false},
 	}
 
