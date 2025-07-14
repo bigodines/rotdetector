@@ -1,4 +1,4 @@
-# RotDetector
+# rotDetector
 
 This amazing piece of technology has been built to assist detecting code that is rotting. Hook it up to your CI/CD or build tool and simply add `BestBy MM/YYYY` to a comment. RotDetector will parse (very quickly) your files looking for expired notes and alert on those.
 
@@ -30,3 +30,7 @@ Options:
     	detect TODOs
   -v	Verbose (debug) mode
 ```
+
+## Learn more about rotDetector
+
+https://imbigo.net/posts/rotdector/
